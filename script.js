@@ -5,6 +5,19 @@ const STORAGE_KEY = 'kitchenCostingData';
 let costingItems = [];
 
 /**
+ * Helper function to format currency as South African Rand (ZAR).
+ * @param {number} amount - The numeric value to format.
+ * @returns {string} The formatted currency string (e.g., "R 12.34").
+ */
+function formatZAR(amount) {
+    return new Intl.NumberFormat('en-ZA', { 
+        style: 'currency', 
+        currency: 'ZAR',
+        minimumFractionDigits: 2
+    }).format(amount);
+}
+
+/**
  * Loads data from Local Storage on app startup.
  */
 function loadData() {
@@ -24,11 +37,6 @@ function saveData() {
 
 /**
  * Calculates the total cost for a single item.
- * NOTE: This basic model assumes the input `itemCost` is the "Cost per Unit" (e.g., Cost per kg),
- * and `itemQuantity` is the amount used (e.g., kg used). Adjust calculation as needed.
- * @param {number} cost - Cost per unit.
- * @param {number} quantity - Quantity used.
- * @returns {number} The calculated cost.
  */
 function calculateItemCost(cost, quantity) {
     // Simple calculation: Cost per Unit * Quantity Used
@@ -45,8 +53,9 @@ function addItem() {
     const unitInput = document.getElementById('itemUnit');
 
     const name = nameInput.value.trim();
-    const cost = parseFloat(costInput.value);
-    const quantity = parseFloat(quantityInput.value);
+    // Use Number() to ensure cost and quantity are treated as numbers
+    const cost = Number(costInput.value);
+    const quantity = Number(quantityInput.value);
     const unit = unitInput.value.trim() || 'units';
 
     if (!name || isNaN(cost) || cost < 0 || isNaN(quantity) || quantity <= 0) {
@@ -57,7 +66,7 @@ function addItem() {
     const calculatedCost = calculateItemCost(cost, quantity);
 
     const newItem = {
-        id: Date.now(), // Unique ID for identification
+        id: Date.now(), // Unique ID
         name: name,
         costPerUnit: cost,
         quantityUsed: quantity,
@@ -73,17 +82,19 @@ function addItem() {
     nameInput.value = '';
     costInput.value = '';
     quantityInput.value = '';
-    unitInput.value = '';
+    // Keep unit value for convenience: unitInput.value = 'kg'; 
 }
 
 /**
  * Removes an item from the list by its ID.
- * @param {number} id - The unique ID of the item to remove.
  */
 function removeItem(id) {
-    costingItems = costingItems.filter(item => item.id !== id);
-    saveData();
-    renderList();
+    // Confirmation is useful to prevent accidental deletion on mobile
+    if (confirm("Remove this ingredient?")) {
+        costingItems = costingItems.filter(item => item.id !== id);
+        saveData();
+        renderList();
+    }
 }
 
 /**
@@ -96,28 +107,36 @@ function renderList() {
     listContainer.innerHTML = ''; // Clear existing list
 
     if (costingItems.length === 0) {
-        listContainer.innerHTML = '<p>No items added yet.</p>';
-        totalCostDisplay.textContent = '$0.00';
+        listContainer.innerHTML = '<p class="no-items">No items added yet. Start costing!</p>';
+        totalCostDisplay.textContent = formatZAR(0);
         return;
     }
 
-    const ul = document.createElement('ul');
+    // Use a DocumentFragment for performance when adding many elements
+    const fragment = document.createDocumentFragment();
 
     costingItems.forEach(item => {
         totalCost += item.totalItemCost;
 
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <strong>${item.name}</strong>: 
-            $${item.totalItemCost.toFixed(2)} 
-            (Used ${item.quantityUsed} ${item.unit} @ $${item.costPerUnit.toFixed(2)}/${item.unit})
-            <button onclick="removeItem(${item.id})" style="margin-left: 10px;">Remove</button>
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'list-item';
+        itemDiv.dataset.id = item.id; // Store ID for removal
+
+        itemDiv.innerHTML = `
+            <div class="list-item-details">
+                <span class="item-name">${item.name}</span>
+                <span class="item-cost-text">
+                    (${item.quantityUsed} ${item.unit} @ ${formatZAR(item.costPerUnit)}/${item.unit})
+                </span>
+            </div>
+            <strong>${formatZAR(item.totalItemCost)}</strong>
+            <button class="remove-item-btn" onclick="removeItem(${item.id})">Remove</button>
         `;
-        ul.appendChild(li);
+        fragment.appendChild(itemDiv);
     });
 
-    listContainer.appendChild(ul);
-    totalCostDisplay.textContent = `$${totalCost.toFixed(2)}`;
+    listContainer.appendChild(fragment);
+    totalCostDisplay.textContent = formatZAR(totalCost);
 }
 
 /**
@@ -128,9 +147,8 @@ function clearAllData() {
         costingItems = [];
         localStorage.removeItem(STORAGE_KEY);
         renderList();
-        alert("Data cleared.");
     }
 }
 
 // Initialize the app when the script loads
-loadData();
+document.addEventListener('DOMContentLoaded', loadData);
