@@ -1,0 +1,152 @@
+/* --- Mobile-First Base Styles (Default for all screen sizes) --- */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 10px;
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+    text-align: center;
+    color: #007bff;
+}
+
+/* --- Input Area: Flexbox for mobile stacking --- */
+.item-input-grid {
+    display: flex;
+    flex-direction: column; /* Stack inputs vertically on small screens */
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input[type="text"], 
+input[type="number"] {
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1em;
+    width: 100%; /* Full width on mobile */
+    box-sizing: border-box;
+}
+
+/* --- Buttons --- */
+button {
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.add-button {
+    background-color: #28a745;
+    color: white;
+}
+.add-button:hover {
+    background-color: #218838;
+}
+
+.clear-button {
+    background-color: #dc3545;
+    color: white;
+    width: 100%;
+    margin-top: 15px;
+}
+.clear-button:hover {
+    background-color: #c82333;
+}
+
+/* --- List Styling --- */
+.list-container {
+    padding: 0;
+}
+
+.list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed #eee;
+    font-size: 0.95em;
+}
+
+.list-item-details {
+    flex-grow: 1;
+    padding-right: 10px;
+}
+
+.item-name {
+    font-weight: bold;
+    color: #343a40;
+}
+
+.item-cost-text {
+    display: block;
+    font-size: 0.8em;
+    color: #6c757d;
+}
+
+.remove-item-btn {
+    background: none;
+    color: #dc3545;
+    font-size: 0.9em;
+    padding: 5px 10px;
+    border: 1px solid #dc3545;
+}
+.remove-item-btn:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+.no-items {
+    text-align: center;
+    color: #999;
+}
+
+/* --- Total Summary --- */
+.total-section {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    margin-top: 10px;
+    border-top: 2px solid #ccc;
+    font-size: 1.3em;
+}
+.total-amount {
+    color: #007bff;
+}
+
+/* ------------------------------------------------------------------- */
+/* --- DESKTOP/TABLET Breakpoint (min-width: 600px) --- */
+/* ------------------------------------------------------------------- */
+@media (min-width: 600px) {
+    
+    /* Change input layout from vertical stack to horizontal grid */
+    .item-input-grid {
+        flex-direction: row;
+        /* The inputs will now share the space horizontally */
+    }
+
+    /* Distribute input width: Name takes more space, values take less */
+    #itemName { flex-basis: 35%; }
+    #itemCost, #itemQuantity { flex-basis: 20%; }
+    #itemUnit { flex-basis: 15%; }
+    .add-button { flex-basis: 10%; }
+
+    /* List view improvement */
+    .list-item {
+        padding: 10px 15px;
+    }
+}
