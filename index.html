@@ -3,42 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kitchen Costing App</title>
-    <style>
-        /* Add your CSS styles here for layout and appearance */
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .item-input { display: flex; gap: 10px; margin-bottom: 10px; }
-        #costing-list { border: 1px solid #ccc; padding: 10px; min-height: 50px; }
-        .total-section { margin-top: 20px; font-size: 1.2em; font-weight: bold; }
-        button { padding: 8px 15px; cursor: pointer; }
-    </style>
+    <title>Kitchen Costing (ZAR)</title>
+    <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-    <h1>Full Kitchen Costing</h1>
+    <div class="container">
+        <h1>Kitchen Costing (ZAR)</h1>
 
-    <h2>Add New Item</h2>
-    <div class="item-input">
-        <input type="text" id="itemName" placeholder="Item Name (e.g., Flour)" required>
-        <input type="number" id="itemCost" placeholder="Cost per Unit ($)" min="0" step="0.01" required>
-        <input type="number" id="itemQuantity" placeholder="Quantity (g/mL/units)" min="0" required>
-        <input type="text" id="itemUnit" placeholder="Unit (e.g., kg/L/unit)">
-        <button onclick="addItem()">Add Item</button>
+        <section class="add-item-section">
+            <h2>Add New Ingredient</h2>
+            <div class="item-input-grid">
+                <input type="text" id="itemName" placeholder="Ingredient Name (e.g., Flour)" required>
+                <input type="number" id="itemCost" placeholder="Cost (R/Unit)" min="0" step="0.01" required>
+                <input type="number" id="itemQuantity" placeholder="Quantity Used" min="0" required>
+                <input type="text" id="itemUnit" placeholder="Unit (e.g., kg/L)" value="kg">
+                <button onclick="addItem()" class="add-button">Add Item</button>
+            </div>
+        </section>
+
+        <hr>
+
+        <section class="costing-summary">
+            <h2>Ingredient List</h2>
+            
+            <div id="costing-list" class="list-container">
+                <p class="no-items">No items added yet.</p>
+            </div>
+
+            <div class="total-section">
+                <span>Total Recipe Cost:</span> 
+                <span id="totalCost" class="total-amount">R 0.00</span>
+            </div>
+
+            <button onclick="clearAllData()" class="clear-button">Clear All Data</button>
+        </section>
     </div>
-
-    <hr>
-
-    <h2>Ingredient List & Total Cost</h2>
-    <div id="costing-list">
-        <p>No items added yet.</p>
-    </div>
-
-    <div class="total-section">
-        Total Cost: <span id="totalCost">$0.00</span>
-    </div>
-
-    <hr>
-
-    <button onclick="clearAllData()">Clear All Data</button>
 
     <script src="script.js"></script>
 </body>
